@@ -4,14 +4,11 @@ echo "Extraindo arquivos";
 $needle = "<DOC>";
 $needleFim = "</DOC>";
 
-
 $arquivos = scandir("efe95/efe95");
 
 foreach ($arquivos as $key => $arquivo) {
-	if ($key > 4) {
-		continue;
-	}
 	if ($arquivo != "." && $arquivo != "..") {
+		echo "<br/>Extraindo arquivo " . $arquivo . "<br/>";
 		$path = "efe95/efe95/" . $arquivo;
 		$myfile = fopen($path, "r") or die("Unable to open file!");
 		$html = fread($myfile,filesize($path));
@@ -31,29 +28,125 @@ foreach ($arquivos as $key => $arquivo) {
 		    $lastPos = $lastPos + strlen($needleFim);
 		}
 
-		foreach ($inicios as $key => $pos) {
-			if ($key > 0) {
-				break;
-			}
-			printbr(substr($html, $inicios[$key], $fins[$key] - $inicios[$key] + strlen($needleFim)));
+		foreach ($inicios as $key2 => $pos) {
+			$documento = substr($html, $inicios[$key2], $fins[$key2] - $inicios[$key2] + strlen($needleFim));
+			inserirDocumento($documento);
 		}
-
-
-		echo "<br/>Extraindo arquivo " . $arquivo . "<br/>";
-		# code...
-
-		
 	}
 }
 
+/*
+$documento = '<DOC>
+<DOCNO>EFE19950101-00001</DOCNO>
+<DOCID>EFE19950101-00001</DOCID>
+<DATE>19950101</DATE>
+<TIME>01.02</TIME>
+<SCATE>POX</SCATE>
+<FICHEROS>95F.JPG</FICHEROS>
+<DESTINO>MUN EXG ICX</DESTINO>
+<CATEGORY>POLITICA</CATEGORY>
+<CLAVE>DP7038</CLAVE>
+<NUM>233</NUM>
+<PRIORIDAD>U</PRIORIDAD>
+<TITLE>   RUSIA-CHECHENIA
+           TROPAS RUSAS DICEN HABER TOMADO CONTROL EDIFICIOS GROZNI
+</TITLE>
+<TEXT>    Moscú, 1 ene (EFE).-La capital de la separatista república de
+ Chechenia, Grozni, entró en la vispera del Nuevo Año en un cruento
+ ataque lanzado por las tropas rusas con artillería que dejo en llamas
+ a numeroso edificios de la ciudad, entre ellos el Parlamento y el
+ Palacio Presidencial.
+    Según un comunicado difundido por la agencia Interfax, las fuerzas
+ rusas han tomado la estación de ferrocarriles, así como varios
+ edificios administrativos del centro de la ciudad, y prosiguen con su
+ labor de desarmar a las "formaciones ilegales" chechenes, para
+ restablecer el orden constitucional ebn la república, según el
+ gobierno.
+    El Gobierno ha señalado que las tropas rusas toman medidas para
+ apagar el incendio que se provocó en la planta de petróleo situada en
+ la capital con el riesgo de una catastrofe ecológica, después de ser
+ alcanzada por varios proyectiles, y en donde se encuentra un deposito
+ miles de toneladas de amoníaco, un producto químico altamente tóxico.
+    La Nochevieja, sin embargo, ha sido tranquila, a pesar de los
+ disparos de francotiradores de ambos bandos, y las dos partes
+ comienzan a disminuir su actividad bélica.
+    El presidente chechén, Yojar Dudáyev, según Interfaz, se encuentra
+ en un refugio subterraneo presuntamente situado bajo el Palacio
+ Presidemcial, desde donde se dirigió a sus seguidores para insistir
+ en que " el puebo chechén ya ha ganado una gran victoria moral".EFE
+    mrc/PL
 
-function searchTag($tagName $texto) {
-	
+
+ 01/01/01-02/95
+
+
+
+</TEXT>
+</DOC>';
+
+
+inserirDocumento($documento);
+*/
+function inserirDocumento($documento) {
+	inserirRegistro(searchTag("DOCNO", $documento), 
+					searchTag("DOCID", $documento), 
+					searchTag("DATE", $documento), 
+					searchTag("TIME", $documento), 
+					searchTag("SCATE", $documento), 
+					searchTag("FICHEROS", $documento), 
+					searchTag("DESTINO", $documento), 
+					searchTag("CATEGORY", $documento), 
+					searchTag("CLAVE", $documento), 
+					searchTag("NUM", $documento), 
+					searchTag("PRIORIDAD", $documento), 
+					searchTag("TITLE", $documento), 
+					searchTag("TEXT", $documento));
 }
+
+function searchTag($tagName, $texto) {
+	$posIni = strpos($texto, "<" . $tagName . ">");
+	if ($posIni >= 0) {
+		$posFim = strpos($texto, "</" . $tagName . ">");
+		$posIni += strlen("<" . $tagName . ">");
+		return substr($texto, $posIni, $posFim - $posIni);
+	} else {
+		return null;
+	}
+}
+
+function inserirRegistro($docNro, $docId, $data, $tempo, $scate, $ficheiros, $destino, $categoria, $clave, $num, $prioridade, $title, $text) {
+	$mysqli = new mysqli("localhost", "root", "", "test");
+
+	if (mysqli_connect_errno()) {
+	    printf("Connect failed: %s\n", mysqli_connect_error());
+	    exit();
+	}
+	$mysqli->query("set names 'utf8'");
+
+
+	$sql = "INSERT INTO `trabalho` (`nro`, `ident`, `data`, `TIME`, `SCATE`, `FICHEROS`, `DESTINO`, `CATEGORY`, `CLAVE`, `NUM`, `PRIORIDAD`, `TITLE`, `TEXT`) VALUES ('" . $mysqli->real_escape_string($docNro) . "', 
+						'" . $mysqli->real_escape_string($docId) . "', 
+						'" . $mysqli->real_escape_string($data) . "', 
+						'" . $mysqli->real_escape_string($tempo) . "', 
+						'" . $mysqli->real_escape_string($scate) . "', 
+						'" . $mysqli->real_escape_string($ficheiros) . "', 
+						'" . $mysqli->real_escape_string($destino) . "', 
+						'" . $mysqli->real_escape_string($categoria) . "', 
+						'" . $mysqli->real_escape_string($clave) . "', 
+						'" . $mysqli->real_escape_string($num) . "', 
+						'" . $mysqli->real_escape_string($prioridade) . "', 
+						'" . $mysqli->real_escape_string($title) . "', 
+						'" . $mysqli->real_escape_string($text) . "')";
+
+	$mysqli->query($sql);
+}
+
 function printbr($texto) {
 	print_r("<br/><br/>");
 	print_r($texto);
 	print_r("<br/><br/>");
 
 }
+
+print_r("FIMMMMMMMMMMMMMMMM");
 ?>
