@@ -27,7 +27,7 @@ require_once 'stemm_es.php';
 
 $lines = file('stemm_test_corpus.txt');
 
-$now = time();
+/*$now = time();
 foreach ($lines as $line) {
 	$part = split(' ', $linea);
 	$st = stemm_es::stemm($part[0]);
@@ -39,5 +39,8 @@ foreach ($lines as $line) {
 }
 
 print "<BR>Stemmed: " . count($lines) . " words in " . (time() - $now) . " secs";
+*/
+
+print_r(stemm_es::stemm("JAPON-A"));
 
 ?>
