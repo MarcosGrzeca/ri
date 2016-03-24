@@ -1,10 +1,14 @@
 <?php
 echo "Extraindo arquivos";
 
+header('Content-Type: text/html; charset=utf-8');
+
 $needle = "<DOC>";
 $needleFim = "</DOC>";
 
 $arquivos = scandir("efe95/efe95");
+
+set_time_limit(0);
 
 foreach ($arquivos as $key => $arquivo) {
 	if ($arquivo != "." && $arquivo != "..") {
@@ -115,7 +119,7 @@ function searchTag($tagName, $texto) {
 }
 
 function inserirRegistro($docNro, $docId, $data, $tempo, $scate, $ficheiros, $destino, $categoria, $clave, $num, $prioridade, $title, $text) {
-	$mysqli = new mysqli("localhost", "root", "", "test");
+	$mysqli = new mysqli("localhost", "root", "asdf0tiny00", "ri");
 
 	if (mysqli_connect_errno()) {
 	    printf("Connect failed: %s\n", mysqli_connect_error());
@@ -135,9 +139,8 @@ function inserirRegistro($docNro, $docId, $data, $tempo, $scate, $ficheiros, $de
 						'" . $mysqli->real_escape_string($clave) . "', 
 						'" . $mysqli->real_escape_string($num) . "', 
 						'" . $mysqli->real_escape_string($prioridade) . "', 
-						'" . $mysqli->real_escape_string($title) . "', 
-						'" . $mysqli->real_escape_string($text) . "')";
-
+						'" . trim($mysqli->real_escape_string($title)) . "', 
+						'" . converteEncodingTexto(trim($mysqli->real_escape_string($text))) . "')";
 	$mysqli->query($sql);
 }
 
@@ -147,6 +150,45 @@ function printbr($texto) {
 	print_r("<br/><br/>");
 
 }
+
+function converteEncodingTexto($value) {
+	$encoding[0] = "UTF-8";
+	$encoding[1] = "Windows-1252";
+	$encoding[2] = "ISO-8859-1";
+	$encoding[3] = "ISO-8859-15";
+	$encoding[4] = "Windows-1251";
+	
+	$temp = array();
+	if (mb_detect_encoding($value, $encoding) != "UTF-8") {
+		$value = utf8_encode($value);
+	}
+	if (! check_utf8($value)) {
+		$value = utf8_encode($value);
+	}
+	return $value;
+}
+
+function check_utf8($str) {
+    $len = strlen($str);
+    for($i = 0; $i < $len; $i++){
+        $c = ord($str[$i]);
+        if ($c > 128) {
+            if (($c > 247)) return false;
+            elseif ($c > 239) $bytes = 4;
+            elseif ($c > 223) $bytes = 3;
+            elseif ($c > 191) $bytes = 2;
+            else return false;
+            if (($i + $bytes) > $len) return false;
+            while ($bytes > 1) {
+                $i++;
+                $b = ord($str[$i]);
+                if ($b < 128 || $b > 191) return false;
+                $bytes--;
+            }
+        }
+    }
+    return true;
+} // end of check_utf8
 
 print_r("FIMMMMMMMMMMMMMMMM");
 ?>
