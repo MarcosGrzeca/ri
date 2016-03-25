@@ -1,4 +1,16 @@
-<?
+<?php
+
+function searchTag($tagName, $texto) {
+    $posIni = strpos($texto, "<" . $tagName . ">");
+    if ($posIni >= 0) {
+        $posFim = strpos($texto, "</" . $tagName . ">");
+        $posIni += strlen("<" . $tagName . ">");
+        return trim(substr($texto, $posIni, $posFim - $posIni));
+    } else {
+        return null;
+    }
+}
+
 function converteEncodingTexto($value) {
 	$encoding[0] = "UTF-8";
 	$encoding[1] = "Windows-1252";

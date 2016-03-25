@@ -1,5 +1,6 @@
 <?php
 include_once("connect.php");
+include_once("utils.php");
 
 $myfile = fopen("Topicos.txt", "r") or die("Unable to open file!");
 $html = fread($myfile,filesize("Topicos.txt"));
@@ -37,22 +38,11 @@ function inserirConsulta($documento) {
 					searchTag("ES-desc", $documento));
 }
 
-function searchTag($tagName, $texto) {
-	$posIni = strpos($texto, "<" . $tagName . ">");
-	if ($posIni >= 0) {
-		$posFim = strpos($texto, "</" . $tagName . ">");
-		$posIni += strlen("<" . $tagName . ">");
-		return trim(substr($texto, $posIni, $posFim - $posIni));
-	} else {
-		return null;
-	}
-}
-
 function inserirRegistro($num, $title, $doc) {
 	$sql = "INSERT INTO `consultas` (`num`, `title`, `desc`) VALUES (
 						'" . $GLOBALS["mysqli"]->real_escape_string($num) . "', 
-						'" . $GLOBALS["mysqli"]->real_escape_string($title) . "', 
-						'" . $GLOBALS["mysqli"]->real_escape_string($doc) . "')";
+						'" . converteEncodingTexto(trim($GLOBALS["mysqli"]->real_escape_string($title))) . "', 
+						'" . converteEncodingTexto(trim($GLOBALS["mysqli"]->real_escape_string($doc))) . "')";
 
 	$GLOBALS["mysqli"]->query($sql);
 }

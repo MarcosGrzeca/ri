@@ -3,7 +3,8 @@ include_once("connect.php");
 set_time_limit(0);
 
 $textoResultado = "";
-$sql = "SELECT * FROM consultas LIMIT 0, 3	";
+print_r("EUEE");
+$sql = "SELECT * FROM consultas LIMIT 0, 3";
 if ($result = $mysqli->query($sql)) {
 	$numConsulta = 0;
 	while ($res = $result->fetch_object()) {
@@ -15,6 +16,9 @@ if ($result = $mysqli->query($sql)) {
 		    printf("Connect failed: %s\n", mysqli_connect_error());
 		    exit();
 		}
+		print_r($sql);
+		print_r("<br/>");
+		print_r("<br/>");
 		$mysqliConsulta->query("set names 'utf8'");
 		if ($resultConsulta = $mysqliConsulta->query($sql)) {
 			$dados = array();
