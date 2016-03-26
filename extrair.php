@@ -2,6 +2,13 @@
 echo "Extraindo arquivos";
 
 header('Content-Type: text/html; charset=utf-8');
+require_once('FirePHPCore/fb.php');
+include_once("connect.php");
+error_reporting(E_ERROR);
+require_once 'stemmer/stemmer-es1.0/stemm_es.php';
+
+
+FB::info("COMECEI");							
 
 $needle = "<DOC>";
 $needleFim = "</DOC>";
@@ -11,6 +18,10 @@ $arquivos = scandir("efe95/efe95");
 set_time_limit(0);
 
 foreach ($arquivos as $key => $arquivo) {
+	/*print_r($arquivo);
+	if ($arquivo != "efe19950219.sgml") {
+		continue;
+	}*/
 	if ($arquivo != "." && $arquivo != "..") {
 		echo "<br/>Extraindo arquivo " . $arquivo . "<br/>";
 		$path = "efe95/efe95/" . $arquivo;
@@ -108,6 +119,7 @@ function inserirDocumento($documento) {
 }
 
 function searchTag($tagName, $texto) {
+
 	$posIni = strpos($texto, "<" . $tagName . ">");
 	if ($posIni >= 0) {
 		$posFim = strpos($texto, "</" . $tagName . ">");
@@ -116,32 +128,57 @@ function searchTag($tagName, $texto) {
 	} else {
 		return null;
 	}
+
 }
 
 function inserirRegistro($docNro, $docId, $data, $tempo, $scate, $ficheiros, $destino, $categoria, $clave, $num, $prioridade, $title, $text) {
-	$mysqli = new mysqli("localhost", "root", "asdf0tiny00", "ri");
+/*	$mysqli = new mysqli("localhost", "root", "", "ri3");
 
 	if (mysqli_connect_errno()) {
 	    printf("Connect failed: %s\n", mysqli_connect_error());
 	    exit();
 	}
 	$mysqli->query("set names 'utf8'");
+*/
+	$title = converteEncodingTexto(trim($title));
+	$text = converteEncodingTexto(trim($text));
+	
+	$part1 = explode(' ', $title);
+	$part2 = explode(' ', $text);
 
+	$title_stemm = "";
+	/*foreach ($part1 as $key => $value) {
+		if ($title_stemm != "") {
+			$title_stemm .= " ";
+		}
+		$title_stemm .= stemm_es::stemm($value);
+	}
+*/
+	$text_stemm = "";
+	/*foreach ($part2 as $key => $value) {
+		if ($text_stemm != "") {
+			$text_stemm .= " ";
+		}
+		$text_stemm .= stemm_es::stemm($value);
+	}*/
 
-	$sql = "INSERT INTO `trabalho` (`nro`, `ident`, `data`, `TIME`, `SCATE`, `FICHEROS`, `DESTINO`, `CATEGORY`, `CLAVE`, `NUM`, `PRIORIDAD`, `TITLE`, `TEXT`) VALUES ('" . $mysqli->real_escape_string($docNro) . "', 
-						'" . $mysqli->real_escape_string($docId) . "', 
-						'" . $mysqli->real_escape_string($data) . "', 
-						'" . $mysqli->real_escape_string($tempo) . "', 
-						'" . $mysqli->real_escape_string($scate) . "', 
-						'" . $mysqli->real_escape_string($ficheiros) . "', 
-						'" . $mysqli->real_escape_string($destino) . "', 
-						'" . $mysqli->real_escape_string($categoria) . "', 
-						'" . $mysqli->real_escape_string($clave) . "', 
-						'" . $mysqli->real_escape_string($num) . "', 
-						'" . $mysqli->real_escape_string($prioridade) . "', 
-						'" . trim($mysqli->real_escape_string($title)) . "', 
-						'" . converteEncodingTexto(trim($mysqli->real_escape_string($text))) . "')";
-	$mysqli->query($sql);
+	$sql = "INSERT INTO `trabalho` (`nro`, `ident`, `data`, `TIME`, `SCATE`, `FICHEROS`, `DESTINO`, `CATEGORY`, `CLAVE`, `NUM`, `PRIORIDAD`, `TITLE`, `TEXT`, `title_stemmer`, `text_stemmer`) VALUES ('" . $GLOBALS["mysqli"]->real_escape_string($docNro) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($docId) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($data) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($tempo) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($scate) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($ficheiros) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($destino) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($categoria) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($clave) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($num) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($prioridade) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($title) . "', 
+						'" . $GLOBALS["mysqli"]->real_escape_string($text) . "',
+						'" . converteEncodingTexto(trim($GLOBALS["mysqli"]->real_escape_string($title_stemm))) . "', 
+						'" . converteEncodingTexto(trim($GLOBALS["mysqli"]->real_escape_string($text_stemm))) . "' 
+						)";
+						$GLOBALS["mysqli"]->query($sql);
 }
 
 function printbr($texto) {
