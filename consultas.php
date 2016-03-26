@@ -46,5 +46,4 @@ function inserirRegistro($num, $title, $doc) {
 
 	$GLOBALS["mysqli"]->query($sql);
 }
-
 ?>
