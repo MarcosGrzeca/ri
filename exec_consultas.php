@@ -1,23 +1,19 @@
 <?php
 include_once("connect.php");
-set_time_limit(0);
 
 $textoResultado = "";
-$sql = "SELECT * FROM consultas LIMIT 0, 3";
+$sql = "SELECT * FROM consultas LIMIT 0, 50";
 if ($result = $mysqli->query($sql)) {
 	$numConsulta = 0;
 	while ($res = $result->fetch_object()) {
 		$sql = getSqlConsulta($res->title, $res->desc);
 
-		$mysqliConsulta = new mysqli("localhost", "root", "", "ri");
+		$mysqliConsulta = new mysqli("localhost", "root", SENHA, BD);
 
 		if (mysqli_connect_errno()) {
 		    printf("Connect failed: %s\n", mysqli_connect_error());
 		    exit();
 		}
-		print_r($sql);
-		print_r("<br/>");
-		print_r("<br/>");
 		$mysqliConsulta->query("set names 'utf8'");
 		if ($resultConsulta = $mysqliConsulta->query($sql)) {
 			$dados = array();
@@ -31,13 +27,11 @@ if ($result = $mysqli->query($sql)) {
 			}
 			$ind = 0;
 			foreach ($dados as $key => $value) {
-				//FB::info($numConsulta);	
 				//$textoResultado .= $numConsulta	. " ppp Q0 ppp " . $key . " ppp " . $ind  . " ppp " . $value . " ppp " . "LUCAS_MARCOS";
 				//$textoResultado .= "<br/>";
 				$textoResultado .= $numConsulta	. "\tQ0\t" . $key . "\t" . $ind  . "\t" . $value . "\t" . "LUCAS_MARCOS" . "\r\n";
 				$ind++;
 			}
-			//print_r($textoResultado);
 		}
 		$numConsulta++;
 	}

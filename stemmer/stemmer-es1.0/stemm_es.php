@@ -23,6 +23,8 @@
 
 */
 
+error_reporting(E_ERROR);
+
 class stemm_es {
 
 	function is_vowel($c) {
