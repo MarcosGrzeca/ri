@@ -2,7 +2,7 @@
 include_once("connect.php");
 
 $textoResultado = "";
-$sql = "SELECT * FROM consultas LIMIT 0, 50";
+$sql = "SELECT * FROM consultas LIMIT 0, 5";
 if ($result = $mysqli->query($sql)) {
 	$numConsulta = 0;
 	while ($res = $result->fetch_object()) {
@@ -14,6 +14,7 @@ if ($result = $mysqli->query($sql)) {
 		    printf("Connect failed: %s\n", mysqli_connect_error());
 		    exit();
 		}
+		FB::log($sql);
 		$mysqliConsulta->query("set names 'utf8'");
 		if ($resultConsulta = $mysqliConsulta->query($sql)) {
 			$dados = array();

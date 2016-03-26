@@ -1,5 +1,5 @@
 <?php
-define("BD", "ri3.");
+define("BD", "ri3");
 define("SENHA", "");
 header('Content-Type: text/html; charset=utf-8');
 set_time_limit(0);
@@ -10,5 +10,6 @@ if (mysqli_connect_errno()) {
     exit();
 }
 $mysqli->query("set names 'utf8'");
+
 ob_start();
 require_once('FirePHPCore/fb.php');
