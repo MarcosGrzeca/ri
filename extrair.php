@@ -2,7 +2,6 @@
 echo "Extraindo arquivos";
 
 header('Content-Type: text/html; charset=utf-8');
-require_once('FirePHPCore/fb.php');
 include_once("connect.php");
 error_reporting(E_ERROR);
 require_once 'stemmer/stemmer-es1.0/stemm_es.php';

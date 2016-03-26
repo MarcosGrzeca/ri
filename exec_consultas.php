@@ -3,7 +3,6 @@ include_once("connect.php");
 set_time_limit(0);
 
 $textoResultado = "";
-print_r("EUEE");
 $sql = "SELECT * FROM consultas LIMIT 0, 3";
 if ($result = $mysqli->query($sql)) {
 	$numConsulta = 0;
@@ -32,35 +31,27 @@ if ($result = $mysqli->query($sql)) {
 			}
 			$ind = 0;
 			foreach ($dados as $key => $value) {
-				$textoResultado .= $numConsulta	. " ppp Q0 ppp " . $key . " ppp " . $ind  . " ppp " . $value . " ppp " . "LUCAS_MARCOS";
-				$textoResultado .= "<br/>";
+				//FB::info($numConsulta);	
+				//$textoResultado .= $numConsulta	. " ppp Q0 ppp " . $key . " ppp " . $ind  . " ppp " . $value . " ppp " . "LUCAS_MARCOS";
+				//$textoResultado .= "<br/>";
+				$textoResultado .= $numConsulta	. "\tQ0\t" . $key . "\t" . $ind  . "\t" . $value . "\t" . "LUCAS_MARCOS" . "\r\n";
 				$ind++;
 			}
-			print_r($textoResultado);
+			//print_r($textoResultado);
 		}
 		$numConsulta++;
 	}
 }
 
+FB::info($textoResultado);
+$myFile = "resultado.txt";
+$fh = fopen($myFile, 'w') or die("can't open file");
+fwrite($fh, $textoResultado);
+fclose($fh);
+
+print_r("Acesse o arquivo " . $myFile);
+
 function getSqlConsulta($title, $text) {
 	return "SELECT id, nro, score FROM ( SELECT t.id, t.nro, MATCH(t.title, t.text) AGAINST ('" . $GLOBALS["mysqli"]->real_escape_string($title) . "') as score from trabalho t UNION SELECT ta.id, ta.nro, MATCH(ta.title, ta.text) AGAINST ('" . $GLOBALS["mysqli"]->real_escape_string($text) . "') as score from trabalho ta ORDER by 3 desc LIMIT 0, 200 ) as t";
 }
-
-/*$sql = "SELECT id, title, score FROM ( SELECT t.id, t.title, MATCH(t.title, t.text) AGAINST ('Carta-bomba para Kiesbauer') as score from trabalho t UNION SELECT ta.id, ta.title, MATCH(ta.title, ta.text) AGAINST ('Encontrar información sobre la explosión de una carta-bomba en el estudio de la presentadora del canal de televisión PRO7 Arabella Kiesbauer') as score from trabalho ta ORDER by 3 desc LIMIT 0, 200 ) as t";
-
-			print_r($sql);
-		if ($result = $mysqli->query($sql)) {
-			$dados = array();
-			while ($res = $result->fetch_object()) {
-					if (count ($dados) > 99) {
-						break;
-					}
-					if (in_array($res->id, $dados)) {
-					} else {
-						$dados[] = $res->id;
-					}
-			}
-		}
-		var_dump($dados);
-*/
 ?>
