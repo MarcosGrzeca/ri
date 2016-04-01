@@ -2,7 +2,7 @@
 include_once("connect.php");
 
 $textoResultado = "";
-$sql = "SELECT * FROM consultas LIMIT 0, 5";
+$sql = "SELECT * FROM consultas";
 if ($result = $mysqli->query($sql)) {
 	$numConsulta = 0;
 	while ($res = $result->fetch_object()) {
