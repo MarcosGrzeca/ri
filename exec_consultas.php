@@ -46,7 +46,16 @@ fclose($fh);
 print_r("Acesse o arquivo " . $myFile);
 
 function getSqlConsulta($title, $text) {
-	$mode = " IN NATURAL LANGUAGE MODE";
+	$mode = " WITH QUERY EXPANSION";
 	return "SELECT id, nro, score FROM ( SELECT t.id, t.nro, MATCH(t.title, t.text) AGAINST ('" . $GLOBALS["mysqli"]->real_escape_string($title) . "'" . $mode . ") as score from trabalho t UNION SELECT ta.id, ta.nro, MATCH(ta.title, ta.text) AGAINST ('" . $GLOBALS["mysqli"]->real_escape_string($text) . "'" . $mode . ") as score from trabalho ta ORDER by 3 desc LIMIT 0, 200 ) as t";
 }
+/*
+search_modifier:
+  {
+       IN NATURAL LANGUAGE MODE
+     | IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION
+     | IN BOOLEAN MODE
+     | WITH QUERY EXPANSION
+  }
+ */
 ?>
