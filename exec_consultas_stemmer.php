@@ -7,11 +7,13 @@ require_once("utils.php");
 die;*/
 
 $textoResultado = "";
-$sql = "SELECT * FROM consultas";
+$sql = "SELECT * FROM consultas LIMIT 0, 2";
 if ($result = $mysqli->query($sql)) {
 	$numConsulta = 0;
 	while ($res = $result->fetch_object()) {
+			FB::info($res);
 		$sql = getSqlConsulta($res->title, $res->desc);
+		FB::log($sql);
 		$mysqliConsulta = new mysqli("localhost", "root", SENHA, BD);
 
 		continue;
@@ -52,6 +54,8 @@ fclose($fh);
 print_r("Acesse o arquivo " . $myFile);
 
 function getSqlConsulta($title, $text) {
+	$title = aplicarStemming($title);
+	$text = aplicarStemming($text);
 	$mode = " IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION";
 	return "SELECT id, nro, score FROM ( SELECT t.id, t.nro, MATCH(t.title_stemmer, t.text_stemmer) AGAINST ('" . $GLOBALS["mysqli"]->real_escape_string($title) . "'" . $mode . ") as score from trabalho t UNION SELECT ta.id, ta.nro, MATCH(ta.title_stemmer, ta.text_stemmer) AGAINST ('" . $GLOBALS["mysqli"]->real_escape_string($text) . "'" . $mode . ") as score from trabalho ta ORDER by 3 desc LIMIT 0, 200 ) as t";
 }
