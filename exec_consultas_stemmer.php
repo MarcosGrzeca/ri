@@ -7,16 +7,14 @@ require_once("utils.php");
 die;*/
 
 $textoResultado = "";
-$sql = "SELECT * FROM consultas LIMIT 0, 2";
+$sql = "SELECT * FROM consultas LIMIT 0, 10";
 if ($result = $mysqli->query($sql)) {
 	$numConsulta = 0;
 	while ($res = $result->fetch_object()) {
 			FB::info($res);
 		$sql = getSqlConsulta($res->title, $res->desc);
-		FB::log($sql);
 		$mysqliConsulta = new mysqli("localhost", "root", SENHA, BD);
 
-		continue;
 		if (mysqli_connect_errno()) {
 		    printf("Connect failed: %s\n", mysqli_connect_error());
 		    exit();
