@@ -50,4 +50,15 @@ function check_utf8($str) {
     return true;
 } // end of check_utf8
 
+function aplicarStemming($frase) {
+    $part1 = explode(' ', $frase);
+    $stemming = "";
+    foreach ($part1 as $key => $value) {
+        if ($stemming != "") {
+            $stemming .= " ";
+        }
+        $stemming .= stemm_es::stemm($value);
+    }
+    return converteEncodingTexto($stemming);
+}
 ?>
