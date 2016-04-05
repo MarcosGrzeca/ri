@@ -7,7 +7,7 @@ require_once("utils.php");
 die;*/
 
 $textoResultado = "";
-$sql = "SELECT * FROM consultas LIMIT 0, 10";
+$sql = "SELECT * FROM consultas";
 if ($result = $mysqli->query($sql)) {
 	$numConsulta = 0;
 	while ($res = $result->fetch_object()) {
