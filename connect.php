@@ -1,6 +1,6 @@
 <?php
-define("BD", "ri3");
-define("SENHA", "");
+define("BD", "ri");
+define("SENHA", "asdf0tiny00");
 header('Content-Type: text/html; charset=utf-8');
 set_time_limit(0);
 $mysqli = new mysqli("localhost", "root", SENHA, BD);

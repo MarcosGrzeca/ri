@@ -61,4 +61,16 @@ function aplicarStemming($frase) {
     }
     return converteEncodingTexto($stemming);
 }
+
+function clearNumber($nro) {
+    
+    $s="";
+    for ($x=1; $x<=strlen($nro); $x++){
+        $ch=substr($nro,$x-1,1);
+        if (ord($ch)>=48 && ord($ch)<=57){
+            $s=$s.$ch;
+        }
+    }
+    return $s;
+}
 ?>

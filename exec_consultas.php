@@ -1,5 +1,6 @@
 <?php
 include_once("connect.php");
+include_once("utils.php");
 
 $textoResultado = "";
 $sql = "SELECT * FROM consultas";
@@ -29,7 +30,7 @@ if ($result = $mysqli->query($sql)) {
 			foreach ($dados as $key => $value) {
 				//$textoResultado .= $numConsulta	. " ppp Q0 ppp " . $key . " ppp " . $ind  . " ppp " . $value . " ppp " . "LUCAS_MARCOS";
 				//$textoResultado .= "<br/>";
-				$textoResultado .= $numConsulta	. "\tQ0\t" . $key . "\t" . $ind  . "\t" . $value . "\t" . "LUCAS_MARCOS" . "\r\n";
+				$textoResultado .= clearNumber($res->num) . "\tQ0\t" . $key . "\t" . $ind  . "\t" . $value . "\t" . "LUCAS_MARCOS" . "\n";
 				$ind++;
 			}
 		}
