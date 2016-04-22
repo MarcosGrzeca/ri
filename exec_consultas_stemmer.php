@@ -12,6 +12,7 @@ if ($result = $mysqli->query($sql)) {
 	$numConsulta = 0;
 	while ($res = $result->fetch_object()) {
 			FB::info($res);
+		$numCons = clearNumber($res->num);
 		$sql = getSqlConsulta($res->title, $res->desc);
 		$mysqliConsulta = new mysqli("localhost", "root", SENHA, BD);
 
@@ -35,7 +36,7 @@ if ($result = $mysqli->query($sql)) {
 			foreach ($dados as $key => $value) {
 				//$textoResultado .= $numConsulta	. " ppp Q0 ppp " . $key . " ppp " . $ind  . " ppp " . $value . " ppp " . "LUCAS_MARCOS";
 				//$textoResultado .= "<br/>";
-				$textoResultado .= clearNumber($res->num)	. "\tQ0\t" . $key . "\t" . $ind  . "\t" . $value . "\t" . "LUCAS_MARCOS" . "\r\n";
+				$textoResultado .= $numCons	. "\tQ0\t" . $key . "\t" . $ind  . "\t" . $value . "\t" . "LUCAS_MARCOS" . "\r\n";
 				$ind++;
 			}
 		}
