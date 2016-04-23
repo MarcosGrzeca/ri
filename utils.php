@@ -62,6 +62,23 @@ function aplicarStemming($frase) {
     return converteEncodingTexto($stemming);
 }
 
+function aplicarStemmingWildCard($frase) {
+    $part1 = explode(' ', $frase);
+    $stemming = "";
+    foreach ($part1 as $key => $value) {
+        if ($stemming != "") {
+            $stemming .= " ";
+        }
+        $nemValue  =stemm_es::stemm($value);
+        $stemming .= $nemValue;
+        if ($nemValue != $value) {
+            $stemming .= "*";
+        }
+    }
+    return converteEncodingTexto($stemming);
+}
+
+
 function clearNumber($nro) {
     
     $s="";
