@@ -55,7 +55,7 @@ print_r("Acesse o arquivo " . $myFile);
 function getSqlConsulta($title, $text) {
 	$title = aplicarStemming($title);
 	$text = aplicarStemming($text);
-	$mode = " IN BOOLEAN MODE";
+	$mode = " WITH QUERY EXPANSION";
 	return "SELECT id, nro, score FROM ( SELECT t.id, t.nro, MATCH(t.title_stemmer, t.text_stemmer) AGAINST ('" . $GLOBALS["mysqli"]->real_escape_string($title) . "'" . $mode . ") as score from trabalho t UNION SELECT ta.id, ta.nro, MATCH(ta.title_stemmer, ta.text_stemmer) AGAINST ('" . $GLOBALS["mysqli"]->real_escape_string($text) . "'" . $mode . ") as score from trabalho ta ORDER by 3 desc LIMIT 0, 200 ) as t";
 }
 /*
